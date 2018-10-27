@@ -1,0 +1,19 @@
+I associated this project with its own git repository, as well as a linked backup repository in Dropbox. 
+
+After updating files, open a terminal window to the project location and type
+
+	git status
+	
+This will display all differences between the working directory and the repository. Type
+
+	git commit -a -m '<commit message>'
+	
+This will commit all files with the commit message <commit message> -- for a multiline message, end the command at -a
+
+Typing 'git status' again should show that the local repository has been updated, but the "origin" repository in Dropbox is behind. 
+
+To update the Dropbox repository, type
+
+	git push
+	
+After that, everything should be good to go. 
