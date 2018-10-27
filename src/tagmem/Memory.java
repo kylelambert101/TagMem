@@ -15,7 +15,7 @@ public class Memory {
 		return this.entries;
 	}
 	
-	public void setEntries(List entries) {
+	public void setEntries(List<Entry> entries) {
 		this.entries = entries;
 	}
 	
