@@ -1,0 +1,17 @@
+{
+	"entries":
+	[
+		{
+			"id": 1, 
+			"name": "Test Name", 
+			"value": "Test Value", 
+			"taglist": ["test","tag","list"]
+		},
+		{
+			"id": 2, 
+			"name": "Another test Entry", 
+			"value": "Test Value", 
+			"taglist": ["test","tag","list", "two"]
+		}
+	]
+}
