@@ -82,6 +82,7 @@ public class JSONMemoryDao implements MemoryDao {
 		return memory;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void save(Memory memory,String saveFilePath) {
 		// JSONObject that will be written to the file
 		JSONObject topLevelObject = new JSONObject();
