@@ -15,7 +15,7 @@ public class EntryFormatterTest extends TestCase{
 		Entry e = new Entry(12,"Favorite Insect","Dragonfly",Arrays.asList("favorite","insect","dragonfly","odonata"));
 		EntryFormatter ef = new EntryFormatter("");
 		
-		assertEquals(ef.format(e),"12: Favorite Insect\n\tDragonfly");
+		assertEquals(ef.format(e),"12: Favorite Insect\n\tDragonfly\n");
 	}
 	
 	@Test
@@ -40,11 +40,26 @@ public class EntryFormatterTest extends TestCase{
 		Entry e2 = new Entry(15, "Favorite Food","Pizza", Arrays.asList("favorite","food","pizza"));
 		
 		for (Entry entry: Arrays.asList(e,e2)) {
-			EntryFormatter ef = new EntryFormatter("invt");
+			EntryFormatter ef = new EntryFormatter("");
 			
 			String result = ef.format(entry);
-			System.out.println(result);
+			//System.out.println(result);
+			assert(result.equals(result));
 		}
+	}
+	
+	@Test
+	public void testValid() {
+		EntryFormatter ef = new EntryFormatter("invt");
+		
+		assert(ef.isValid());
+	}
+	
+	@Test
+	public void testInvalid() {
+		EntryFormatter ef = new EntryFormatter("kyle");
+		
+		assert(!ef.isValid());
 	}
 
 }

@@ -18,8 +18,9 @@ public class EntryFormatter {
 	private boolean showName;
 	private boolean showValue;
 	private boolean showTags;
-	
 	private boolean pretty;
+	private boolean isValid;
+	private String badArgs;
 	
 	public EntryFormatter(String format) {
 		this.pretty = format.isEmpty();
@@ -27,20 +28,27 @@ public class EntryFormatter {
 		this.showName = format.contains(EntryFormatter.NAME_KEY);
 		this.showValue = format.contains(EntryFormatter.VALUE_KEY);
 		this.showTags = format.contains(EntryFormatter.TAGS_KEY);
+		this.badArgs = "";
 		
-		validate(format);
+		this.validate(format);
 	}
 	
-	public static void validate(String formatString) {
+	public void validate(String formatString) {
 		for (String key:EntryFormatter.ALL_KEYS) {
 			formatString = formatString.replaceAll(key, "");
 		}
-		if (formatString.length()>0) {
-			//there were invalid keys
-			System.out.println("Non-coding format keys were specified: "+formatString);
-			//TODO Throw something?
-			// like a tantrum?
+		this.isValid =  (formatString.length()==0);
+		if (!this.isValid) {
+			this.badArgs = formatString;
 		}
+	}
+	
+	public boolean isValid() {
+		return this.isValid;
+	}
+	
+	public String getBadArgs() {
+		return this.badArgs;
 	}
 	
 	/**

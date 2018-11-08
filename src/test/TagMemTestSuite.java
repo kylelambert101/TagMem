@@ -8,7 +8,8 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
 	TagMemClientTest.class,
 	MemoryTest.class,
-	JSONMemoryDaoTest.class
+	JSONMemoryDaoTest.class,
+	EntryFormatterTest.class
 })
 
 public class TagMemTestSuite{

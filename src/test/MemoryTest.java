@@ -24,5 +24,31 @@ public class MemoryTest extends TestCase{
 		Entry result = results.get(0);
 		assertEquals(2, result.getId());
 	}
+	
+	public void testStrictMatching() {
+		JSONMemoryDao dao = new JSONMemoryDao("testFiles/test.json");
+		Memory m = dao.load();
+		
+		ArrayList<String> searchTags = new ArrayList<String>(Arrays.asList("list","two"));
+		
+		List<Entry> results = m.search(searchTags,true);
+		List<Entry> defaultResults = m.search(searchTags);
+		
+		assertEquals(results,defaultResults);
+		
+		assertEquals(1,results.size());
+	}
+	
+	public void testNonStrictMatching() {
+		JSONMemoryDao dao = new JSONMemoryDao("testFiles/test.json");
+		Memory m = dao.load();
+		
+		ArrayList<String> searchTags = new ArrayList<String>(Arrays.asList("list","two"));
+		
+		List<Entry> results = m.search(searchTags,false);
+		
+		assertEquals(2,results.size());
+	}
+	
 
 }
