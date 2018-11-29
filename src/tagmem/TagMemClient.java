@@ -188,6 +188,7 @@ public class TagMemClient {
 			Entry e = cli.parseEntryFromQuickAddString(addArguments);
 			if (e == null) {
 				addToBuffer(warning,"Unable to parse quick-add string: \""+addArguments+"\"");
+				addToBuffer(warning,"Please provide entry data in the following format: \n<name>: <value> [<space-separated tag list>]");
 			} else {
 				addToBuffer(info,"Parsed values for quick-add:");
 				addToBuffer(info,"Name: "+e.getName());
