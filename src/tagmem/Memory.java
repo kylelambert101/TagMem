@@ -48,5 +48,20 @@ public class Memory {
 	public List<Entry> search(List<String> searchTags){
 		return this.search(searchTags,true);
 	}
+	
+	public void add(Entry e) {
+		this.entries.add(e);
+	}
+
+	public int getNextEntryId() {
+		//non-elegant way: iterate through entries and store max id
+		int maxId = 0;
+		for (Entry e: this.entries) {
+			if (e.getId() > maxId) {
+				maxId = e.getId();
+			}
+		}
+		return maxId+1;
+	}
 
 }

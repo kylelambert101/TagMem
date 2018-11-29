@@ -22,6 +22,10 @@ public class EntryFormatter {
 	private boolean isValid;
 	private String badArgs;
 	
+	public EntryFormatter() {
+		this("");
+	}
+	
 	public EntryFormatter(String format) {
 		this.pretty = format.isEmpty();
 		this.showID = format.contains(EntryFormatter.ID_KEY);
@@ -78,7 +82,7 @@ public class EntryFormatter {
 		
 		return (String.format("%s%s%s%s", 
 				(this.showID ? 		("ID: "+e.getId()+"\n\t") : ""),
-				(this.showName ?		("Name: "+e.getName()+"\n\t") : ""),
+				(this.showName ?	("Name: "+e.getName()+"\n\t") : ""),
 				(this.showValue ? 	("Value: "+e.getValue()+"\n\t") : ""),
 				(this.showTags ? 	("Tags: ["+e.getTags().toString()+"]\n\t") : "")
 				));

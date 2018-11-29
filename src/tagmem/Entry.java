@@ -46,7 +46,7 @@ public class Entry {
 		this.tags.remove(tag);
 	}
 	public String toString() {
-		return ("("+this.id+") "+this.name+": "+this.value+" ["+this.tags.toString()+"]");
+		return ("("+this.id+") "+this.name+": "+this.value+" "+this.tags.toString()+"");
 	}
 
 }
