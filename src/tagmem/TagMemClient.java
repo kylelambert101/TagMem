@@ -43,16 +43,6 @@ public class TagMemClient {
 		
 		Option addMode = new Option("a","add",false,"Run quickadd");
 		addMode.setRequired(false);
-		/*
-		Option addName = new Option("n","name",true,"Name for quick-add");
-		addName.setRequired(false);
-		
-		Option addValue = new Option("v","value",true,"Value for quick-add");
-		addValue.setRequired(false);
-		
-		Option addTags = new Option("t","tags",true,"Tags for quick-add");
-		addTags.setRequired(false);
-		*/
 		
 		Option verboseFlag = new Option("v","verbose",false,"Include extra information for debugging");
 		verboseFlag.setRequired(false);
@@ -63,11 +53,6 @@ public class TagMemClient {
 		options.addOption(formatFlag);
 		options.addOption(matchFlag);
 		options.addOption(addMode);
-		/*
-		options.addOption(addName);
-		options.addOption(addValue);
-		options.addOption(addTags);
-		*/
 		options.addOption(verboseFlag);
 		
 		parser = new DefaultParser();
@@ -198,20 +183,6 @@ public class TagMemClient {
 			printSearchResults(results);
 			
 		} else if (cmd.hasOption("a")) { /*quick-add mode*/
-			/*
-			if (!(cmd.hasOption("n") && cmd.hasOption("v") && cmd.hasOption("t"))){
-				addToBuffer(warning,"Name, Value, and Tags are required for quick-add");
-			}
-			String name = cmd.getOptionValue("n");
-			String value = cmd.getOptionValue("v");
-			String tagString = cmd.getOptionValue("t");
-			if (verbose) {
-				addToBuffer(info,"Parsed values for quick-add:");
-				addToBuffer(info,"Name: "+name);
-				addToBuffer(info,"Value: "+value);
-				addToBuffer(info,"Tags: "+tagString);
-			}
-			*/
 			//put otherargs back together for quick add
 			String addArguments = String.join(" ", otherArgs);
 			Entry e = cli.parseEntryFromQuickAddString(addArguments);
