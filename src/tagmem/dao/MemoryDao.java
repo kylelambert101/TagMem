@@ -1,6 +1,6 @@
 package tagmem.dao;
 
-import tagmem.Memory;
+import tagmem.entity.Memory;
 
 public interface MemoryDao {
 	

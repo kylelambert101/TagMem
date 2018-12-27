@@ -1,4 +1,4 @@
-package tagmem;
+package tagmem.entity;
 
 import java.util.Collection;
 

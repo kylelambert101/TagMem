@@ -1,4 +1,4 @@
-package tagmem;
+package tagmem.exception;
 
 public class EntryNotFoundException extends Exception {
 

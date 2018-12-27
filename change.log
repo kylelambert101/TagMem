@@ -9,7 +9,7 @@ Version 1.0.0
 - Initial commit also included bug fix so that --version will not require a data file path
 
 
-Version X.X.X
-=========
+Version 1.0.1
+=============
 - Fixed bug in EntryFormatter that added extra brackets to tag list
 - Updated TagMemClient to use flag.getOpt() rather than using the hard-coded strings

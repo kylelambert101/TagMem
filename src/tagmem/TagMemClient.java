@@ -10,6 +10,9 @@ import java.util.regex.Pattern;
 import org.apache.commons.cli.*;
 
 import tagmem.dao.json.JSONMemoryDao;
+import tagmem.entity.Entry;
+import tagmem.entity.Memory;
+import tagmem.exception.EntryNotFoundException;
 import tagmem.utils.EntryFormatter;
 
 public class TagMemClient {
@@ -39,7 +42,7 @@ public class TagMemClient {
 	private static CommandLineParser parser;
 	private static HelpFormatter formatter;
 	
-	private static final String VERSION = "1.0.0";
+	private static final String VERSION = "1.0.1";
 	//TODO More elegant way to store version
 	
 	/* AUTOSAVE = whether client will automatically save new entries */

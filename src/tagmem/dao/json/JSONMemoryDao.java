@@ -10,9 +10,9 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import tagmem.Entry;
-import tagmem.Memory;
 import tagmem.dao.MemoryDao;
+import tagmem.entity.Entry;
+import tagmem.entity.Memory;
 
 public class JSONMemoryDao implements MemoryDao {
 	

@@ -1,8 +1,10 @@
-package tagmem;
+package tagmem.entity;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import tagmem.exception.EntryNotFoundException;
 
 public class Memory {
 	

@@ -5,9 +5,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.TestCase;
-import tagmem.Entry;
-import tagmem.Memory;
 import tagmem.dao.json.JSONMemoryDao;
+import tagmem.entity.Entry;
+import tagmem.entity.Memory;
 
 public class MemoryTest extends TestCase{
 	

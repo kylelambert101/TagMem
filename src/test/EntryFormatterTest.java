@@ -5,7 +5,7 @@ import java.util.Arrays;
 import org.junit.Test;
 
 import junit.framework.TestCase;
-import tagmem.Entry;
+import tagmem.entity.Entry;
 import tagmem.utils.EntryFormatter;
 
 public class EntryFormatterTest extends TestCase{
