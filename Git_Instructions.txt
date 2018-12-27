@@ -29,4 +29,11 @@ After that, everything should be good to go.
 Tagging
 =======
 
-I decided I wanted to tag the project at each version. To do that, ... Google time
+I decided I wanted to tag the project at each version. To do that, ...
+
+git tag -a <version> -m "<message>"
+
+For example
+	git tag -a 1.0.0 -m "Version 1.0.0"
+	
+Used instructions from the following sites; https://git-scm.com/book/en/v2/Git-Basics-Tagging

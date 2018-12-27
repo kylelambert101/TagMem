@@ -18,6 +18,7 @@ public class TagMemClient {
 	 * - hide command
 	 * - associate tag command (maybe move out to a script)
 	 * - expand unit tests to cover add/remove/view features
+	 * - Fix bug in view (formatter?) - tags are showing up with too many brackets
 	 */
 	
 	private JSONMemoryDao memoryDao;
