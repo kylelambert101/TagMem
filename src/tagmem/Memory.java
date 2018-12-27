@@ -63,5 +63,31 @@ public class Memory {
 		}
 		return maxId+1;
 	}
+	
+	public boolean isValidEntryId(Integer id) {
+		try {
+			this.getEntryById(id);
+			return true;
+		} catch (EntryNotFoundException e) {
+			return false;
+		}
+	}
+	
+	public void remove(Integer entryId) throws EntryNotFoundException {
+		if (!this.isValidEntryId(entryId)) {
+			throw new EntryNotFoundException("Entry with id "+entryId+" not found");
+		}
+		this.entries.remove(this.getEntryById(entryId));
+		//TODO is this an okay way to remove from the list
+	}
+	
+	public Entry getEntryById(Integer id) throws EntryNotFoundException {
+		for (Entry e: this.entries) {
+			if (e.getId() == id) {
+				return e;
+			}
+		}
+		throw new EntryNotFoundException("Entry with id "+id+" not found");
+	}
 
 }

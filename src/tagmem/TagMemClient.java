@@ -3,6 +3,7 @@ package tagmem;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,11 +14,20 @@ import tagmem.utils.EntryFormatter;
 
 public class TagMemClient {
 	
+	/* General TODOs
+	 * - hide command
+	 * - associate tag command (maybe move out to a script)
+	 * - expand unit tests to cover add/remove/view features
+	 */
+	
 	private JSONMemoryDao memoryDao;
 	private Memory memory;
 	private static Options options;
 	private static CommandLineParser parser;
 	private static HelpFormatter formatter;
+	
+	private static final String VERSION = "1.0.0";
+	//TODO More elegant way to store version
 	
 	/* AUTOSAVE = whether client will automatically save new entries */
 	private final boolean AUTOSAVE = true;
@@ -27,7 +37,7 @@ public class TagMemClient {
 		options = new Options();
 		
 		Option dataFilePath = new Option("d","dataFilePath",true,"Data file to use");
-		dataFilePath.setRequired(true);
+		dataFilePath.setRequired(false);//switched to false so that version won't require datafile
 		
 		Option interactiveMode = new Option("i","interactive",false,"Start interactive mode");
 		interactiveMode.setRequired(false);
@@ -41,19 +51,31 @@ public class TagMemClient {
 		Option matchFlag = new Option("m","match",true,"Match style (all|any)");
 		matchFlag.setRequired(false);
 		
+		Option viewFlag = new Option("c","view",true,"View (get it, \"c\" like \"see\"???)");
+		viewFlag.setRequired(false);
+		
 		Option addMode = new Option("a","add",false,"Run quickadd");
 		addMode.setRequired(false);
 		
+		Option removeMode = new Option("r","remove",true,"Remove");
+		removeMode.setRequired(false);
+		
 		Option verboseFlag = new Option("v","verbose",false,"Include extra information for debugging");
 		verboseFlag.setRequired(false);
+		
+		Option versionFlag = new Option("z","version",false,"Print TagMem.jar version");
+		versionFlag.setRequired(false);
 		
 		options.addOption(dataFilePath);
 		options.addOption(interactiveMode);
 		options.addOption(searchMode);
 		options.addOption(formatFlag);
 		options.addOption(matchFlag);
+		options.addOption(viewFlag);
 		options.addOption(addMode);
+		options.addOption(removeMode);
 		options.addOption(verboseFlag);
+		options.addOption(versionFlag);
 		
 		parser = new DefaultParser();
         formatter = new HelpFormatter();
@@ -78,6 +100,10 @@ public class TagMemClient {
 		return toReturn.toString();
 	}
 	
+	public Entry getEntryById(Integer id) throws EntryNotFoundException {
+		return this.memory.getEntryById(id);
+	}
+	
 	private Entry parseEntryFromQuickAddString(String args) {
 		Pattern quickAddPattern = Pattern.compile("(.+): ?(.+) \\[(.+)\\]");
 		Matcher quickAddMatcher = 	quickAddPattern.matcher(args);
@@ -96,6 +122,28 @@ public class TagMemClient {
 		if (this.AUTOSAVE) {
 			this.memoryDao.save(memory);
 		}
+	}
+	
+	public void removeEntry(Entry e) throws EntryNotFoundException {
+		this.removeEntry(e.getId());
+	}
+	
+	public void removeEntry(Integer id) throws EntryNotFoundException {
+		this.memory.remove(id);
+		if (this.AUTOSAVE) {
+			this.memoryDao.save(memory);
+		}
+	}
+	
+	private boolean getApproval(Integer id) throws EntryNotFoundException {
+		Entry e = this.memory.getEntryById(id);
+		System.out.println("Are you sure you want to remove the following entry? (y/n)");
+		System.out.println("\n"+e.toString()+"\n");
+		System.out.print(">>");
+		Scanner iScan = new Scanner(System.in);
+		String response = iScan.nextLine().toLowerCase();
+		iScan.close();
+		return (response.equals("y") || response.equals("yes"));
 	}
 	
 	public static void addToBuffer(StringBuffer buffer,String message) {
@@ -132,6 +180,18 @@ public class TagMemClient {
 
             System.exit(1);
         }
+        
+        // version flag can just print and quit
+        if (cmd.hasOption("z")) {/*version*/
+			TagMemClient.printVersion();
+			System.exit(0);
+		} else {
+			if (!cmd.hasOption("d")) {
+				System.out.println("Please specify a database file with the -d flag");
+				formatter.printHelp("TagMem", options);
+				System.exit(1);;
+			}
+		}
 		
 		TagMemClient cli = new TagMemClient(cmd.getOptionValue("dataFilePath"));
 		
@@ -139,6 +199,9 @@ public class TagMemClient {
 
 		StringBuffer warning = new StringBuffer();
 		StringBuffer info = new StringBuffer();
+		
+		//TODO get way to prevent multiple incompatible options from being specified
+		// like noncompatibleoptions = (i,s,c,r,a) and if multiple exist, return with error
 
 		System.out.println("");
 		if (cmd.hasOption("i")) {
@@ -202,9 +265,62 @@ public class TagMemClient {
 			if (cmd.hasOption("v")) {
 				System.out.println(info.toString());
 			}
-		}
+		} else if (cmd.hasOption("r")) {/*remove*/
+			//only other parameter should be the entry id. 
+			String removeParam = cmd.getOptionValue("r");
+			Integer idToRemove;
+			try {
+				idToRemove = Integer.parseInt(removeParam);
+				addToBuffer(info,"Entry ID to remove: "+idToRemove);
+				boolean approved = cli.getApproval(idToRemove);
+				if (approved) {
+					cli.removeEntry(idToRemove);
+					addToBuffer(info,"Entry "+idToRemove+" removed");
+					System.out.println("Removed Entry "+idToRemove);
+				} else {
+					addToBuffer(info,"Entry "+idToRemove+" removal aborted");
+					System.out.println("Entry removal aborted");
+				}
+				
+			} catch (NumberFormatException e) {//if an int wasn't specified
+				addToBuffer(warning,"ID to remove must be an integer");
+			} catch(EntryNotFoundException e) {
+				addToBuffer(warning,"Error during removal: "+e.getMessage());
+			}
+			/* verbose */
+			if (cmd.hasOption("v")) {
+				System.out.println(info.toString());
+			}
+			
+		} else if (cmd.hasOption("c")) {
+			Entry entry;
+			EntryFormatter formatter = new EntryFormatter("invt");
+			String viewParam = cmd.getOptionValue("c");
+			Integer idToView;
+			try {
+				idToView = Integer.parseInt(viewParam);
+				addToBuffer(info,"Entry ID to view: "+idToView);
+				entry = cli.getEntryById(idToView);
+				System.out.println(formatter.format(entry));
+			} catch (NumberFormatException e) {//if an int wasn't specified
+				addToBuffer(warning,"Entry ID must be an integer");
+			} catch(EntryNotFoundException e) {
+				addToBuffer(warning, e.getMessage());
+			}
+			/* verbose */
+			if (cmd.hasOption("v")) {
+				System.out.println(info.toString());
+			}
+		} 
 		printWarning(warning);
 		
+	}
+	
+	private static void printVersion() {
+		System.out.println();
+		System.out.println("TagMem Library Version "+VERSION);
+		System.out.println("Kyle Lambert 2018");
+		System.out.println();
 	}
 	
 }

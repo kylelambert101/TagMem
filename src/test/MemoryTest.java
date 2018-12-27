@@ -11,6 +11,8 @@ import tagmem.dao.json.JSONMemoryDao;
 
 public class MemoryTest extends TestCase{
 	
+	//TODO add unit tests for add and remove
+	
 	public void testSearch() {
 		JSONMemoryDao dao = new JSONMemoryDao("testFiles/test.json");
 		Memory m = dao.load();

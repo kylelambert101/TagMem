@@ -40,6 +40,7 @@ public class EntryFormatterTest extends TestCase{
 		Entry e2 = new Entry(15, "Favorite Food","Pizza", Arrays.asList("favorite","food","pizza"));
 		
 		for (Entry entry: Arrays.asList(e,e2)) {
+			//System.out.println(new EntryFormatter("invt").format(entry));
 			EntryFormatter ef = new EntryFormatter("");
 			
 			String result = ef.format(entry);
