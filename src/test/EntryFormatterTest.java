@@ -53,14 +53,14 @@ public class EntryFormatterTest extends TestCase{
 	public void testValid() {
 		EntryFormatter ef = new EntryFormatter("invt");
 		
-		assert(ef.isValid());
+		assertTrue(ef.isValid());
 	}
 	
 	@Test
 	public void testInvalid() {
 		EntryFormatter ef = new EntryFormatter("kyle");
 		
-		assert(!ef.isValid());
+		assertFalse(ef.isValid());
 	}
 
 }

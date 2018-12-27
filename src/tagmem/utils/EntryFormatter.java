@@ -84,7 +84,7 @@ public class EntryFormatter {
 				(this.showID ? 		("ID: "+e.getId()+"\n\t") : ""),
 				(this.showName ?	("Name: "+e.getName()+"\n\t") : ""),
 				(this.showValue ? 	("Value: "+e.getValue()+"\n\t") : ""),
-				(this.showTags ? 	("Tags: ["+e.getTags().toString()+"]\n\t") : "")
+				(this.showTags ? 	("Tags: "+e.getTags().toString()+"\n\t") : "")
 				));
 	}
 	

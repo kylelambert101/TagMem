@@ -18,12 +18,24 @@ public class TagMemClient {
 	 * - hide command
 	 * - associate tag command (maybe move out to a script)
 	 * - expand unit tests to cover add/remove/view features
-	 * - Fix bug in view (formatter?) - tags are showing up with too many brackets
+	 * - Should JSONMemoryDao have a GetMemory method rather than load and save? Hmmm
 	 */
 	
 	private JSONMemoryDao memoryDao;
 	private Memory memory;
+	
 	private static Options options;
+	private static Option dataFilePath;
+	private static Option interactiveFlag;
+	private static Option searchFlag;
+	private static Option formatFlag;
+	private static Option matchFlag;
+	private static Option viewFlag;
+	private static Option addFlag;
+	private static Option removeFlag;
+	private static Option verboseFlag;
+	private static Option versionFlag;
+	
 	private static CommandLineParser parser;
 	private static HelpFormatter formatter;
 	
@@ -37,44 +49,44 @@ public class TagMemClient {
 	static {
 		options = new Options();
 		
-		Option dataFilePath = new Option("d","dataFilePath",true,"Data file to use");
+		dataFilePath = new Option("d","dataFilePath",true,"Data file to use");
 		dataFilePath.setRequired(false);//switched to false so that version won't require datafile
 		
-		Option interactiveMode = new Option("i","interactive",false,"Start interactive mode");
-		interactiveMode.setRequired(false);
+		interactiveFlag = new Option("i","interactive",false,"Start interactive mode");
+		interactiveFlag.setRequired(false);
 		
-		Option searchMode = new Option("s","search",false,"Run single-time search");
-		searchMode.setRequired(false);
+		searchFlag = new Option("s","search",false,"Run single-time search");
+		searchFlag.setRequired(false);
 		
-		Option formatFlag = new Option("f","format",true,"Search result format (i|n|v|t)");
+		formatFlag = new Option("f","format",true,"Search result format (i|n|v|t)");
 		formatFlag.setRequired(false);
 		
-		Option matchFlag = new Option("m","match",true,"Match style (all|any)");
+		matchFlag = new Option("m","match",true,"Match style (all|any)");
 		matchFlag.setRequired(false);
 		
-		Option viewFlag = new Option("c","view",true,"View (get it, \"c\" like \"see\"???)");
+		viewFlag = new Option("c","view",true,"View (get it, \"c\" like \"see\"???)");
 		viewFlag.setRequired(false);
 		
-		Option addMode = new Option("a","add",false,"Run quickadd");
-		addMode.setRequired(false);
+		addFlag = new Option("a","add",false,"Run quickadd");
+		addFlag.setRequired(false);
 		
-		Option removeMode = new Option("r","remove",true,"Remove");
-		removeMode.setRequired(false);
+		removeFlag = new Option("r","remove",true,"Remove");
+		removeFlag.setRequired(false);
 		
-		Option verboseFlag = new Option("v","verbose",false,"Include extra information for debugging");
+		verboseFlag = new Option("v","verbose",false,"Include extra information for debugging");
 		verboseFlag.setRequired(false);
 		
-		Option versionFlag = new Option("z","version",false,"Print TagMem.jar version");
+		versionFlag = new Option("z","version",false,"Print TagMem.jar version");
 		versionFlag.setRequired(false);
 		
 		options.addOption(dataFilePath);
-		options.addOption(interactiveMode);
-		options.addOption(searchMode);
+		options.addOption(interactiveFlag);
+		options.addOption(searchFlag);
 		options.addOption(formatFlag);
 		options.addOption(matchFlag);
 		options.addOption(viewFlag);
-		options.addOption(addMode);
-		options.addOption(removeMode);
+		options.addOption(addFlag);
+		options.addOption(removeFlag);
 		options.addOption(verboseFlag);
 		options.addOption(versionFlag);
 		
@@ -183,11 +195,11 @@ public class TagMemClient {
         }
         
         // version flag can just print and quit
-        if (cmd.hasOption("z")) {/*version*/
+        if (cmd.hasOption(versionFlag.getOpt())) {/*version*/
 			TagMemClient.printVersion();
 			System.exit(0);
 		} else {
-			if (!cmd.hasOption("d")) {
+			if (!cmd.hasOption(dataFilePath.getOpt())) {
 				System.out.println("Please specify a database file with the -d flag");
 				formatter.printHelp("TagMem", options);
 				System.exit(1);;
@@ -205,12 +217,15 @@ public class TagMemClient {
 		// like noncompatibleoptions = (i,s,c,r,a) and if multiple exist, return with error
 
 		System.out.println("");
-		if (cmd.hasOption("i")) {
+		if (cmd.hasOption(interactiveFlag.getOpt())) {
 			System.out.println("Welcome to interactive mode!");
 			//TODO interactive mode
-		} else if (cmd.hasOption("s")) { /*search mode*/
+		} else if (cmd.hasOption(searchFlag.getOpt())) { /*search mode*/
 			
-			String format = (cmd.hasOption("f")) ? cmd.getOptionValue("f") : "";
+			String format = 
+					(cmd.hasOption(formatFlag.getOpt())) 
+					? cmd.getOptionValue(formatFlag.getOpt()) 
+					: "";
 			addToBuffer(info,"Using format: "+(format == "" ? "default" : format));
 			
 			EntryFormatter entryFormatter = new EntryFormatter(format);
@@ -222,8 +237,8 @@ public class TagMemClient {
 			
 			boolean strictMatch;
 			String matchStyle = "default";
-			if (cmd.hasOption("m")) {
-				 matchStyle = cmd.getOptionValue("m");
+			if (cmd.hasOption(matchFlag.getOpt())) {
+				 matchStyle = cmd.getOptionValue(matchFlag.getOpt());
 				if (matchStyle.equals("all")) {
 					strictMatch = true;
 				} else if (matchStyle.equals("any")) {
@@ -240,13 +255,13 @@ public class TagMemClient {
 			addToBuffer(info,"Using match style: "+matchStyle);
 			
 			/* verbose */
-			if (cmd.hasOption("v")) {
+			if (cmd.hasOption(verboseFlag.getOpt())) {
 				System.out.println(info.toString());
 			}
 			String results = cli.search(new ArrayList<String>(Arrays.asList(otherArgs)),entryFormatter,strictMatch);
 			printSearchResults(results);
 			
-		} else if (cmd.hasOption("a")) { /*quick-add mode*/
+		} else if (cmd.hasOption(addFlag.getOpt())) { /*quick-add mode*/
 			//put otherargs back together for quick add
 			String addArguments = String.join(" ", otherArgs);
 			Entry e = cli.parseEntryFromQuickAddString(addArguments);
@@ -263,12 +278,12 @@ public class TagMemClient {
 				System.out.println("Added new entry: "+e.toString());
 			}	
 			/* verbose */
-			if (cmd.hasOption("v")) {
+			if (cmd.hasOption(verboseFlag.getOpt())) {
 				System.out.println(info.toString());
 			}
-		} else if (cmd.hasOption("r")) {/*remove*/
+		} else if (cmd.hasOption(removeFlag.getOpt())) {/*remove*/
 			//only other parameter should be the entry id. 
-			String removeParam = cmd.getOptionValue("r");
+			String removeParam = cmd.getOptionValue(removeFlag.getOpt());
 			Integer idToRemove;
 			try {
 				idToRemove = Integer.parseInt(removeParam);
@@ -289,14 +304,14 @@ public class TagMemClient {
 				addToBuffer(warning,"Error during removal: "+e.getMessage());
 			}
 			/* verbose */
-			if (cmd.hasOption("v")) {
+			if (cmd.hasOption(verboseFlag.getOpt())) {
 				System.out.println(info.toString());
 			}
 			
-		} else if (cmd.hasOption("c")) {
+		} else if (cmd.hasOption(viewFlag.getOpt())) {
 			Entry entry;
 			EntryFormatter formatter = new EntryFormatter("invt");
-			String viewParam = cmd.getOptionValue("c");
+			String viewParam = cmd.getOptionValue(viewFlag.getOpt());
 			Integer idToView;
 			try {
 				idToView = Integer.parseInt(viewParam);
@@ -309,7 +324,7 @@ public class TagMemClient {
 				addToBuffer(warning, e.getMessage());
 			}
 			/* verbose */
-			if (cmd.hasOption("v")) {
+			if (cmd.hasOption(verboseFlag.getOpt())) {
 				System.out.println(info.toString());
 			}
 		} 

@@ -1,21 +1,24 @@
 package test;
 
 
-import java.util.Scanner;
-
 import org.junit.Test;
 
 import junit.framework.TestCase;
+import tagmem.TagMemClient;
 
 public class TagMemClientTest extends TestCase {
 
 	@Test
 	public static void testRun() {
 		//TODO test something -- anything at all
-		Scanner iScan = new Scanner(System.in);
-		String answer = iScan.nextLine().toLowerCase();
-		System.out.println(answer);
-		System.out.println(answer.equals("y") || answer == "yes");
+		
 	}
+	
+	@Test
+	public static void testFlags() {
+		//Figure out how to test that each flag does what it's supposed to
+	}
+	
+	
 
 }

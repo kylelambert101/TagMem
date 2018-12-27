@@ -78,7 +78,6 @@ public class Memory {
 			throw new EntryNotFoundException("Entry with id "+entryId+" not found");
 		}
 		this.entries.remove(this.getEntryById(entryId));
-		//TODO is this an okay way to remove from the list
 	}
 	
 	public Entry getEntryById(Integer id) throws EntryNotFoundException {
