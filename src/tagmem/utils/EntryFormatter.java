@@ -6,6 +6,13 @@ import java.util.List;
 
 import tagmem.entity.Entry;
 
+/*TODO I feel like this should use a format string instead. 
+* Like you give it a string like "Entry %i\n\t(%n)" and it will print 
+* Entry 1
+* 	(Test Name)
+* 
+* That would be a lot more robust than standard invt. 
+*/
 public class EntryFormatter {
 	
 	static String ID_KEY = "i";

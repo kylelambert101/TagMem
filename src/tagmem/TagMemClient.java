@@ -36,13 +36,14 @@ public class TagMemClient {
 	private static Option viewFlag;
 	private static Option addFlag;
 	private static Option removeFlag;
+	private static Option printFlag;
 	private static Option verboseFlag;
 	private static Option versionFlag;
 	
 	private static CommandLineParser parser;
 	private static HelpFormatter formatter;
 	
-	private static final String VERSION = "1.0.1";
+	private static final String VERSION = "1.1.0";
 	//TODO More elegant way to store version
 	
 	/* AUTOSAVE = whether client will automatically save new entries */
@@ -76,6 +77,9 @@ public class TagMemClient {
 		removeFlag = new Option("r","remove",true,"Remove");
 		removeFlag.setRequired(false);
 		
+		printFlag = new Option("p","print",false,"Print all entries");
+		printFlag.setRequired(false);
+		
 		verboseFlag = new Option("v","verbose",false,"Include extra information for debugging");
 		verboseFlag.setRequired(false);
 		
@@ -90,6 +94,7 @@ public class TagMemClient {
 		options.addOption(viewFlag);
 		options.addOption(addFlag);
 		options.addOption(removeFlag);
+		options.addOption(printFlag);
 		options.addOption(verboseFlag);
 		options.addOption(versionFlag);
 		
@@ -102,7 +107,14 @@ public class TagMemClient {
 		this.memory = this.memoryDao.load();
 	}
 	
-	public String search(List<String> tags, EntryFormatter entryFormatter, boolean strictMatch) {
+	public String search(List<String> tags, EntryFormatter entryFormatter, boolean strictMatch, boolean caseSensitive) {
+		//case insensitive logic assumes that all tags in db are lowercase
+		if (!caseSensitive) {
+			//change all search tags to lowercase
+			for (int ind=0;ind<tags.size();ind++) {
+				tags.set(ind, tags.get(ind).toLowerCase());
+			}
+		}
 		List<Entry> results = this.memory.search(tags,strictMatch);
 		StringBuffer toReturn = new StringBuffer();
 		for (Entry e: results) {
@@ -218,6 +230,10 @@ public class TagMemClient {
 		
 		//TODO get way to prevent multiple incompatible options from being specified
 		// like noncompatibleoptions = (i,s,c,r,a) and if multiple exist, return with error
+		// Could this be accomplished by specifying 'levels' for each flag? Like i and s and p are top level flags, and m/f are lower level?
+		// Or maybe just a dtd-like regex. 
+		// Options = (i|sm?f?|a|p|z|r|u)v?
+		// And then just have a method to decode the regex and enforce it against the arguments
 
 		System.out.println("");
 		if (cmd.hasOption(interactiveFlag.getOpt())) {
@@ -261,7 +277,12 @@ public class TagMemClient {
 			if (cmd.hasOption(verboseFlag.getOpt())) {
 				System.out.println(info.toString());
 			}
-			String results = cli.search(new ArrayList<String>(Arrays.asList(otherArgs)),entryFormatter,strictMatch);
+																			
+			String results = cli.search(
+					new ArrayList<String>(Arrays.asList(otherArgs)),
+					entryFormatter,
+					strictMatch,
+					false);//case insensitive search by default
 			printSearchResults(results);
 			
 		} else if (cmd.hasOption(addFlag.getOpt())) { /*quick-add mode*/
@@ -330,7 +351,13 @@ public class TagMemClient {
 			if (cmd.hasOption(verboseFlag.getOpt())) {
 				System.out.println(info.toString());
 			}
-		} 
+		} else if (cmd.hasOption(printFlag.getOpt())) {
+			//print all entries (id and name only)
+			EntryFormatter formatter = new EntryFormatter ("in");
+			for (Entry e: cli.memory.getEntries()) {
+				System.out.println(formatter.format(e));
+			}
+		}
 		printWarning(warning);
 		
 	}

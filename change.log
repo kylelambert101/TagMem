@@ -13,3 +13,9 @@ Version 1.0.1
 =============
 - Fixed bug in EntryFormatter that added extra brackets to tag list
 - Updated TagMemClient to use flag.getOpt() rather than using the hard-coded strings
+
+Version 1.1.0
+=============
+- Changed searches to be case-insensitive
+- Added print flag for showing whole database
+- Added update feature
