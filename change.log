@@ -18,4 +18,4 @@ Version 1.1.0
 =============
 - Changed searches to be case-insensitive
 - Added print flag for showing whole database
-- Added update feature
+- Changed EntryFormatter to use a format string instead of invt flags

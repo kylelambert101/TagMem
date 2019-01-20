@@ -13,6 +13,7 @@ import tagmem.dao.json.JSONMemoryDao;
 import tagmem.entity.Entry;
 import tagmem.entity.Memory;
 import tagmem.exception.EntryNotFoundException;
+import tagmem.exception.InvalidFormatStringException;
 import tagmem.utils.EntryFormatter;
 
 public class TagMemClient {
@@ -41,7 +42,7 @@ public class TagMemClient {
 	private static Option versionFlag;
 	
 	private static CommandLineParser parser;
-	private static HelpFormatter formatter;
+	private static HelpFormatter helpFormatter;
 	
 	private static final String VERSION = "1.1.0";
 	//TODO More elegant way to store version
@@ -99,7 +100,7 @@ public class TagMemClient {
 		options.addOption(versionFlag);
 		
 		parser = new DefaultParser();
-        formatter = new HelpFormatter();
+        helpFormatter = new HelpFormatter();
 	}
 	
 	public TagMemClient(String dataFilePath) {
@@ -196,7 +197,7 @@ public class TagMemClient {
 		}
 	}
 	
-	public static void main(String [] args) {
+	public static void main(String [] args) throws InvalidFormatStringException {
 
         CommandLine cmd = null;
 
@@ -204,7 +205,7 @@ public class TagMemClient {
             cmd = parser.parse(options, args);
         } catch (ParseException e) {
             System.out.println(e.getMessage());
-            formatter.printHelp("TagMem", options);
+            helpFormatter.printHelp("TagMem", options);
 
             System.exit(1);
         }
@@ -216,7 +217,7 @@ public class TagMemClient {
 		} else {
 			if (!cmd.hasOption(dataFilePath.getOpt())) {
 				System.out.println("Please specify a database file with the -d flag");
-				formatter.printHelp("TagMem", options);
+				helpFormatter.printHelp("TagMem", options);
 				System.exit(1);;
 			}
 		}
@@ -247,11 +248,13 @@ public class TagMemClient {
 					: "";
 			addToBuffer(info,"Using format: "+(format == "" ? "default" : format));
 			
-			EntryFormatter entryFormatter = new EntryFormatter(format);
-			if (!entryFormatter.isValid()) {
-				String format_mesg = "Non-coding format keys were specified: "+entryFormatter.getBadArgs();
-				addToBuffer(warning,format_mesg);
-				addToBuffer(info,format_mesg);
+			EntryFormatter entryFormatter=null;
+			try{
+				entryFormatter = new EntryFormatter(format);
+			} catch (InvalidFormatStringException ex) {
+				addToBuffer(warning, ex.getMessage());
+				addToBuffer(info,ex.getMessage());
+				System.exit(1);
 			}
 			
 			boolean strictMatch;
@@ -334,7 +337,7 @@ public class TagMemClient {
 			
 		} else if (cmd.hasOption(viewFlag.getOpt())) {
 			Entry entry;
-			EntryFormatter formatter = new EntryFormatter("invt");
+			EntryFormatter formatter = new EntryFormatter("(%i) %n\n\t%v\n\t%t");
 			String viewParam = cmd.getOptionValue(viewFlag.getOpt());
 			Integer idToView;
 			try {
@@ -352,10 +355,27 @@ public class TagMemClient {
 				System.out.println(info.toString());
 			}
 		} else if (cmd.hasOption(printFlag.getOpt())) {
-			//print all entries (id and name only)
-			EntryFormatter formatter = new EntryFormatter ("in");
+			//print all entries (id and name only by default)
+			String format = 
+					(cmd.hasOption(formatFlag.getOpt())) 
+					? cmd.getOptionValue(formatFlag.getOpt()) 
+					: "%i: %n";
+			addToBuffer(info,"Using format: "+(format == "" ? "default" : format));
+			
+			EntryFormatter entryFormatter=null;
+			try{
+				entryFormatter = new EntryFormatter(format);
+			} catch (InvalidFormatStringException ex) {
+				addToBuffer(warning, ex.getMessage());
+				addToBuffer(info,ex.getMessage());
+				System.exit(1);
+			}
 			for (Entry e: cli.memory.getEntries()) {
-				System.out.println(formatter.format(e));
+				System.out.println(entryFormatter.format(e));
+			}
+			/* verbose */
+			if (cmd.hasOption(verboseFlag.getOpt())) {
+				System.out.println(info.toString());
 			}
 		}
 		printWarning(warning);
