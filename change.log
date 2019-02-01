@@ -19,3 +19,7 @@ Version 1.1.0
 - Changed searches to be case-insensitive
 - Added print flag for showing whole database
 - Changed EntryFormatter to use a format string instead of invt flags
+
+Version 1.1.1
+=============
+- Fixed issue where default format was empty and search results didn't show up

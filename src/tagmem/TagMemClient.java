@@ -44,7 +44,7 @@ public class TagMemClient {
 	private static CommandLineParser parser;
 	private static HelpFormatter helpFormatter;
 	
-	private static final String VERSION = "1.1.0";
+	private static final String VERSION = "1.1.1";
 	//TODO More elegant way to store version
 	
 	/* AUTOSAVE = whether client will automatically save new entries */

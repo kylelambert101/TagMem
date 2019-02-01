@@ -13,15 +13,17 @@ public class EntryFormatter {
 	
 	private String formatString;
 	private static List<String> validSpecifiers = (Arrays.asList("i","n","v","t"));
+	private static final String DEFAULT_FORMAT = "%i: %n\n\t%v\n";
 	
 	//TODO It seems stupid to throw an error from the default constructor. Can this be changed?
 	public EntryFormatter() throws InvalidFormatStringException {
 		//default format
-		this("%i: %n\n\t%v\n");
+		this(DEFAULT_FORMAT);
 	}
 	
+	//TODO Logic seems redundant -- empty constructor behaves same as constructor with empty string
 	public EntryFormatter(String format) throws InvalidFormatStringException{
-		this.formatString = format;
+		this.formatString = format == ""? DEFAULT_FORMAT : format;
 		this.validate();
 	}
 	
