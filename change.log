@@ -1,3 +1,18 @@
+Version 1.1.1
+=============
+- Fixed issue where default format was empty and search results didn't show up
+
+Version 1.1.0
+=============
+- Changed searches to be case-insensitive
+- Added print flag for showing whole database
+- Changed EntryFormatter to use a format string instead of invt flags
+
+Version 1.0.1
+=============
+- Fixed bug in EntryFormatter that added extra brackets to tag list
+- Updated TagMemClient to use flag.getOpt() rather than using the hard-coded strings
+
 Version 1.0.0
 =============
 - Fully functioning command set:
@@ -7,19 +22,3 @@ Version 1.0.0
 	* remove
 	* version
 - Initial commit also included bug fix so that --version will not require a data file path
-
-
-Version 1.0.1
-=============
-- Fixed bug in EntryFormatter that added extra brackets to tag list
-- Updated TagMemClient to use flag.getOpt() rather than using the hard-coded strings
-
-Version 1.1.0
-=============
-- Changed searches to be case-insensitive
-- Added print flag for showing whole database
-- Changed EntryFormatter to use a format string instead of invt flags
-
-Version 1.1.1
-=============
-- Fixed issue where default format was empty and search results didn't show up
