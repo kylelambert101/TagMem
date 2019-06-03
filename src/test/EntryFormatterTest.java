@@ -52,7 +52,7 @@ public class EntryFormatterTest extends TestCase{
 	
 	@Test
 	public void testValid() throws InvalidFormatStringException {
-		EntryFormatter ef = new EntryFormatter("%i\n%n\n%v\n%t");
+		new EntryFormatter("%i\n%n\n%v\n%t");
 		//will throw error if invalid, which will fail test. 
 	}
 	
@@ -60,7 +60,7 @@ public class EntryFormatterTest extends TestCase{
 	public void testInvalidSpecifier() {
 		Exception ex = null;
 		try {
-			EntryFormatter ef = new EntryFormatter("%kyle");
+			new EntryFormatter("%kyle");
 		} catch (InvalidFormatStringException e) {
 			ex = e;
 			assertEquals(e.getMessage(),"invalid entry field specifier: %k");
@@ -72,7 +72,7 @@ public class EntryFormatterTest extends TestCase{
 	public void testInvalidNoSpecifiers() {
 		Exception ex = null;
 		try {
-			EntryFormatter ef = new EntryFormatter("kyle");
+			new EntryFormatter("kyle");
 		} catch (InvalidFormatStringException e) {
 			ex = e;
 			assertEquals(e.getMessage(),"no specifiers were provided in the format string");

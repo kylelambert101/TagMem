@@ -4,7 +4,6 @@ package test;
 import org.junit.Test;
 
 import junit.framework.TestCase;
-import tagmem.TagMemClient;
 
 public class TagMemClientTest extends TestCase {
 

@@ -37,6 +37,7 @@ public class TagMemClient {
 	private static Option viewFlag;
 	private static Option addFlag;
 	private static Option removeFlag;
+	private static Option updateFlag;
 	private static Option printFlag;
 	private static Option verboseFlag;
 	private static Option versionFlag;
@@ -78,6 +79,9 @@ public class TagMemClient {
 		removeFlag = new Option("r","remove",true,"Remove");
 		removeFlag.setRequired(false);
 		
+		updateFlag = new Option("u","update",true,"Update");
+		updateFlag.setRequired(false);
+		
 		printFlag = new Option("p","print",false,"Print all entries");
 		printFlag.setRequired(false);
 		
@@ -95,6 +99,7 @@ public class TagMemClient {
 		options.addOption(viewFlag);
 		options.addOption(addFlag);
 		options.addOption(removeFlag);
+		options.addOption(updateFlag);
 		options.addOption(printFlag);
 		options.addOption(verboseFlag);
 		options.addOption(versionFlag);
@@ -335,6 +340,31 @@ public class TagMemClient {
 				System.out.println(info.toString());
 			}
 			
+		} else if (cmd.hasOption(updateFlag.getOpt())) {
+			/*
+			 * So how should update work?
+			 * I don't want to have to re-type the entire thing. I could make this interactive to minimize the number of arguments. 
+			 * 
+			 * tm -u [id]
+			 * 
+			 *  Print the entry
+			 *  What would you like to change? Type "done" when done
+			 *  Options (case-insensitive):
+			 *  	New Name:
+			 *  	New Value: 
+			 *  	Add Tag: 
+			 *  	Remove Tag: 
+			 * 		Done
+			 * 
+			 * Code plan:
+			 * fetch entry with given ID
+			 * 	show error if no such entry exists
+			 * print entry
+			 * Start prompt
+			 * Take args
+			 * 	How to interpret the new arguments? Is there a better way than a simple if/else?
+			 * 
+			 */
 		} else if (cmd.hasOption(viewFlag.getOpt())) {
 			Entry entry;
 			EntryFormatter formatter = new EntryFormatter("(%i) %n\n\t%v\n\t%t");
