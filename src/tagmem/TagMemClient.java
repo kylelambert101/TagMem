@@ -169,7 +169,22 @@ public class TagMemClient {
 		}
 	}
 	
-	private boolean getApproval(Integer id) throws EntryNotFoundException {
+	public void updateEntry(Integer id) throws EntryNotFoundException {
+		Entry e = getEntryById(id);
+		//TODO Create a method for showing default view of an entry and use that right now
+		//for now, print
+		System.out.println(e.toString());
+		System.out.println();
+		System.out.println("What update(s) would you like to make?");
+		Scanner iScan = new Scanner(System.in);
+		while (iScan.hasNextLine()) {
+			String input = iScan.nextLine();
+			System.out.println("Type done if done");
+		}
+		
+	}
+	
+	private boolean getRemoveApproval(Integer id) throws EntryNotFoundException {
 		Entry e = this.memory.getEntryById(id);
 		System.out.println("Are you sure you want to remove the following entry? (y/n)");
 		System.out.println("\n"+e.toString()+"\n");
@@ -320,7 +335,7 @@ public class TagMemClient {
 			try {
 				idToRemove = Integer.parseInt(removeParam);
 				addToBuffer(info,"Entry ID to remove: "+idToRemove);
-				boolean approved = cli.getApproval(idToRemove);
+				boolean approved = cli.getRemoveApproval(idToRemove);
 				if (approved) {
 					cli.removeEntry(idToRemove);
 					addToBuffer(info,"Entry "+idToRemove+" removed");
@@ -341,7 +356,29 @@ public class TagMemClient {
 			}
 			
 		} else if (cmd.hasOption(updateFlag.getOpt())) {
-			/*
+			//only other argument should be the entry id
+			String updateArg = cmd.getOptionValue(updateFlag.getOpt());
+			Integer idToUpdate;
+			try {
+				idToUpdate = Integer.parseInt(updateArg);
+				addToBuffer(info,"Entry ID to update: "+idToUpdate);
+				
+				cli.updateEntry(idToUpdate);
+				
+				addToBuffer(info, "Entry "+idToUpdate+" updated");
+				System.out.println("Entry "+idToUpdate+" updated");
+				
+			} catch (NumberFormatException e) {//if an int wasn't specified
+				addToBuffer(warning,"ID to update must be an integer");
+			} catch(EntryNotFoundException e) {
+				addToBuffer(warning,"Error during update: "+e.getMessage());
+			}
+			/* verbose */
+			if (cmd.hasOption(verboseFlag.getOpt())) {
+				System.out.println(info.toString());
+			}
+			
+			/* TODO finish update
 			 * So how should update work?
 			 * I don't want to have to re-type the entire thing. I could make this interactive to minimize the number of arguments. 
 			 * 
@@ -366,6 +403,7 @@ public class TagMemClient {
 			 * 
 			 */
 		} else if (cmd.hasOption(viewFlag.getOpt())) {
+			//TODO this should be able to use format flag and use default if none given
 			Entry entry;
 			EntryFormatter formatter = new EntryFormatter("(%i) %n\n\t%v\n\t%t");
 			String viewParam = cmd.getOptionValue(viewFlag.getOpt());
